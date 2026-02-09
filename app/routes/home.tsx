@@ -18,11 +18,13 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative h-[85vh] flex items-center justify-center bg-gray-900 overflow-hidden">
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-50"
+          className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url(/images/T8-2.jpg)",
+            backgroundImage: "url(/images/generated/hero.jpg)",
           }}
         />
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-black/50" />
         <div className="relative z-10 text-center px-6 max-w-3xl">
           <h1 className="font-display text-5xl md:text-7xl font-semibold text-white mb-6 leading-tight">
             Moments Worth

@@ -11,6 +11,59 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
+const generatedPhotos = [
+  {
+    src: "/images/generated/product-watch.jpg",
+    alt: "Luxury Watch Product Shot",
+    category: "Product",
+  },
+  {
+    src: "/images/generated/product-mug.jpg",
+    alt: "Artisan Coffee Mug",
+    category: "Product",
+  },
+  {
+    src: "/images/generated/product-perfume.jpg",
+    alt: "Elegant Perfume Bottle",
+    category: "Product",
+  },
+  {
+    src: "/images/generated/landscape-mountains.jpg",
+    alt: "Mountain Landscape at Golden Hour",
+    category: "Landscape",
+  },
+  {
+    src: "/images/generated/landscape-ocean.jpg",
+    alt: "Ocean Beach at Sunset",
+    category: "Landscape",
+  },
+  {
+    src: "/images/generated/landscape-forest.jpg",
+    alt: "Misty Forest with Sun Rays",
+    category: "Landscape",
+  },
+  {
+    src: "/images/generated/landscape-city.jpg",
+    alt: "Urban Cityscape at Dusk",
+    category: "Landscape",
+  },
+  {
+    src: "/images/generated/portrait-woman.jpg",
+    alt: "Professional Portrait - Woman",
+    category: "Portrait",
+  },
+  {
+    src: "/images/generated/portrait-man.jpg",
+    alt: "Professional Portrait - Man",
+    category: "Portrait",
+  },
+  {
+    src: "/images/generated/portrait-elderly.jpg",
+    alt: "Artistic Portrait - Elderly Woman",
+    category: "Portrait",
+  },
+];
+
 const photos = [
   {
     src: "/images/73_02732-2.jpg",
@@ -182,16 +235,22 @@ const photos = [
 export default function Gallery() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
+  // Combine all photos for lightbox navigation
+  const allPhotos = [
+    ...photos.map((p) => ({ src: p.src, alt: p.alt })),
+    ...generatedPhotos.map((p) => ({ src: p.src, alt: p.alt })),
+  ];
+
   const close = useCallback(() => setSelectedIndex(null), []);
   const prev = useCallback(
     () =>
-      setSelectedIndex((i) => (i !== null ? (i - 1 + photos.length) % photos.length : null)),
-    []
+      setSelectedIndex((i) => (i !== null ? (i - 1 + allPhotos.length) % allPhotos.length : null)),
+    [allPhotos.length]
   );
   const next = useCallback(
     () =>
-      setSelectedIndex((i) => (i !== null ? (i + 1) % photos.length : null)),
-    []
+      setSelectedIndex((i) => (i !== null ? (i + 1) % allPhotos.length : null)),
+    [allPhotos.length]
   );
 
   useEffect(() => {
@@ -241,6 +300,43 @@ export default function Gallery() {
         </div>
       </section>
 
+      {/* Generated Section */}
+      <section className="px-6 pb-24">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="font-display text-3xl md:text-4xl font-semibold text-gray-900 dark:text-white text-center mb-4">
+            Generated
+          </h2>
+          <p className="text-center text-gray-500 dark:text-gray-400 mb-12 max-w-lg mx-auto">
+            AI-generated imagery showcasing creative possibilities.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {generatedPhotos.map((photo, index) => (
+              <div
+                key={index}
+                className="group overflow-hidden rounded-lg cursor-pointer"
+                onClick={() => setSelectedIndex(photos.length + index)}
+              >
+                <div className="aspect-square overflow-hidden">
+                  <img
+                    src={photo.src}
+                    alt={photo.alt}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <div className="p-4 bg-white dark:bg-gray-800">
+                  <span className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                    {photo.category}
+                  </span>
+                  <p className="text-sm text-gray-900 dark:text-white mt-1">
+                    {photo.alt}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Lightbox */}
       {selectedIndex !== null && (
         <div
@@ -271,8 +367,8 @@ export default function Gallery() {
 
           {/* Image */}
           <img
-            src={photos[selectedIndex].src}
-            alt={photos[selectedIndex].alt}
+            src={allPhotos[selectedIndex].src}
+            alt={allPhotos[selectedIndex].alt}
             className="max-h-[85vh] max-w-[90vw] object-contain"
             onClick={(e) => e.stopPropagation()}
           />
@@ -290,7 +386,7 @@ export default function Gallery() {
 
           {/* Counter */}
           <span className="absolute bottom-6 text-white/50 text-sm">
-            {selectedIndex + 1} / {photos.length}
+            {selectedIndex + 1} / {allPhotos.length}
           </span>
         </div>
       )}
